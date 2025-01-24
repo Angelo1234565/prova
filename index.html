@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regione Fortunata</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h1 {
+      color: #ff6347;
+    }
+
+    .regions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .region {
+      padding: 15px;
+      border: none;
+      background-color: #ffeb3b;
+      color: #333;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .region:hover {
+      background-color: #ffc107;
+    }
+
+    .region.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.5s ease-out;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #confirm {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #confirm:hover {
+      background-color: #218838;
+    }
+
+    #result {
+      margin-top: 20px;
+      color: #007bff;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Regione Fortunata 🎯</h1>
+    <p>Scegli la regione che pensi sia fortunata!</p>
+    <div class="regions" id="regions">
+      <!-- 20 regioni -->
+      <button class="region" data-name="Lombardia">Lombardia</button>
+      <button class="region" data-name="Sicilia">Sicilia</button>
+      <button class="region" data-name="Veneto">Veneto</button>
+      <button class="region" data-name="Campania">Campania</button>
+      <button class="region" data-name="Puglia">Puglia</button>
+      <button class="region" data-name="Piemonte">Piemonte</button>
+      <button class="region" data-name="Toscana">Toscana</button>
+      <button class="region" data-name="Sardegna">Sardegna</button>
+      <button class="region" data-name="Calabria">Calabria</button>
+      <button class="region" data-name="Abruzzo">Abruzzo</button>
+      <button class="region" data-name="Umbria">Umbria</button>
+      <button class="region" data-name="Marche">Marche</button>
+      <button class="region" data-name="Lazio">Lazio</button>
+      <button class="region" data-name="Liguria">Liguria</button>
+      <button class="region" data-name="Molise">Molise</button>
+      <button class="region" data-name="Friuli">Friuli</button>
+      <button class="region" data-name="Basilicata">Basilicata</button>
+      <button class="region" data-name="Trentino">Trentino</button>
+      <button class="region" data-name="Valle d'Aosta">Valle d'Aosta</button>
+      <button class="region" data-name="Emilia-Romagna">Emilia-Romagna</button>
+    </div>
+    <button id="confirm" class="hidden">Conferma Regione</button>
+    <div id="result" class="hidden">
+      <h2>🎉 La Regione Fortunata è: <span id="winning-region"></span>!</h2>
+    </div>
+  </div>
+  <script>
+    const regions = document.querySelectorAll('.region');
+    const confirmButton = document.getElementById('confirm');
+    const result = document.getElementById('result');
+    const winningRegionSpan = document.getElementById('winning-region');
+
+    // Configura la regione vincente (da cambiare ogni volta)
+    const winningRegion = "Sicilia"; // Cambia qui la regione vincente
+    let selectedRegion = null;
+
+    // Fase 1: Seleziona una regione
+    regions.forEach((region) => {
+      region.addEventListener('click', () => {
+        selectedRegion = region.getAttribute('data-name');
+        regions.forEach((btn) => btn.classList.remove('selected'));
+        region.classList.add('selected');
+        confirmButton.classList.remove('hidden');
+      });
+    });
+
+    // Fase 2: Conferma la scelta e rimuovi le regioni
+    confirmButton.addEventListener('click', () => {
+      if (!selectedRegion) return;
+
+      if (selectedRegion === winningRegion) {
+        // Se indovina subito
+        winningRegionSpan.textContent = winningRegion;
+        result.classList.remove('hidden');
+        regions.forEach((region) => {
+          region.classList.add('hidden');
+          if (region.getAttribute('data-name') === winningRegion) {
+            region.classList.remove('hidden');
+          }
+        });
+      } else {
+        // Rimuovi 8 regioni casuali
+        const remainingRegions = Array.from(regions).filter(
+          (region) => region.getAttribute('data-name') !== winningRegion
+        );
+        for (let i = 0; i < 8; i++) {
+          const randomIndex = Math.floor(Math.random() * remainingRegions.length);
+          const regionToHide = remainingRegions.splice(randomIndex, 1)[0];
+          regionToHide.classList.add('hidden');
+        }
+
+        // Passa alla fase successiva
+        confirmButton.classList.add('hidden');
+        alert("Sbagliato! Ora rimangono 12 regioni. Prova di nuovo!");
+      }
+    });
+  </script>
+</body>
+</html>
